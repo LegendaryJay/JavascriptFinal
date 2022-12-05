@@ -1,0 +1,114 @@
+#### Basics ####
+
+so im sort of going to skip parts of this one. Basically, I'll have a quasar default page for this stuff that holds a title bar and drawer
+
+name: TitleBar
+props: title, ?ExtraActions
+methods: onMenuPress()
+Sub-components: drawerItems
+
+name: SquishyButton
+props: actionList
+
+
+#### Drawer ####
+name:  Drawer
+props: Pages
+methods: linkPress()
+Sub-components: drawerItems
+
+name: Drawer Items
+props: Page, icon
+methods: onClick
+Sub-components: 
+
+#### Main ####
+name: TimerComponent
+props: MainTask, text, whatIsIt
+methods: onFinish()
+Sub-components: CurrentTask
+
+name: currentTask
+props: MainTask
+methods: addTask(), switchTask(), finishTask()
+Sub-components: ?itemsList(subtasks, switchTask)
+
+name: itemList
+props: MainTask(get subtasks under it), onClick
+methods: onClick()
+Sub-components: 
+
+#### tutorial picture/modal ####
+
+name: whatIsIt
+props: Steps
+methods: dismiss()
+Sub-components: whatIsItItems
+
+name: whatIsItItems
+props: Step
+methods:
+Sub-components: 
+
+#### Tasks ####
+
+[BasicPage]
+name: Tasks
+props: title, Tasks, 
+methods: add(), up(), down(), expand(), edit(), remove()
+Sub-components: itemList(foreach Task)
+
+#### Modify Tasks ####
+name: editSubtask
+props: Subtasks
+methods: remove(), onSave(), add()
+Sub-components: 
+
+name: ModifyTask
+props: Task
+methods: save(), remove()
+Sub-components: 
+
+#### Options ####
+[basic Page]
+name: Options
+props: options
+methods: onSave()
+Sub-components: 
+
+#### planner ####
+[basic Page]
+name: plannerPage
+props: Tasks
+methods: 
+Sub-components: PlannerItem
+
+name: plannerItem
+props: Task
+methods: onClick()
+Sub-components: 
+
+#### awards ####
+[basic Page]
+Name:AwardsPage
+Props: ActionList
+sub-Components: a whole lot
+
+name: BadgesContent
+props: BadgeList, PlayerBadgeList
+methods: 
+Sub-components: 
+
+name: ThemesContent
+props: Themes, PlayerThemes, thisTheme
+methods: ThemeChange()
+Sub-components: 
+
+Name: stats
+props: PlayerStats
+
+##################
+
+I feel like the easiest thing for me to do is to do the lab from the beginning of the class as my final project. It's a Pomodoro timer with some settings, awards, and other things. You can add tasks and see how much left you have to do on that task and it shows a schedule. I guess it's just a productivity tool centered around Pomodoro and schedules. I'd probably use quasar because it already has so much of what I need. As for interactions, there would be awards, statistics, and achievements, and it would count how many successful pomodoros you did.  The primary audience for this kind of app is basically me who is deeply irresponsible and doesn't want to be. This would probably be best for people with disabilities and issues prioritizing. 
+
+I guess to make it clearer, a person would either just use the Pomodoro timers as what it is or input a bunch of tasks and use those to gauge what they are going to spend time doing. Over time, they'll rack up badges and achievements.
