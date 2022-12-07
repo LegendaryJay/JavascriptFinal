@@ -7,11 +7,7 @@
 
         <q-toolbar-title>
           <q-avatar>
-            <q-img
-              src="~assets/pomme.png"
-              spinner-color="white"
-              style="height: 30px; max-width: 30px"
-            />
+            <icon-component/>
           </q-avatar>
           <text v-if="$q.platform.is.desktop"> Pomme App -</text>
           {{ $route.meta.title }}
@@ -51,9 +47,8 @@
             <q-item-section
               avatar
             >
-              <q-icon>
-                <img src="~assets/pomme.png" alt="apple"/>
-              </q-icon>
+                <icon-component/>
+
             </q-item-section>
 
             <q-item-section>
@@ -95,11 +90,12 @@ import {ref} from 'vue'
 import EssentialLink from "components/EssentialLink.vue";
 import SimplePopupComponent from "components/SimplePopupComponent.vue";
 import LoginComponent from "components/LoginComponent.vue";
+import iconComponent from "components/iconComponent.vue";
 import {userLogging} from "src/model/UserRepository";
 import {useUserStore} from "stores/User";
 
 export default {
-  components: {EssentialLink, SimplePopupComponent, LoginComponent},
+  components: {EssentialLink, SimplePopupComponent, LoginComponent, iconComponent},
   setup() {
     const getImageUrl = () => {
       return new URL(`../../assets/pomme.png`, import.meta.url).href
