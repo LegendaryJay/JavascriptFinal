@@ -12,6 +12,7 @@ export function Task(data) {
     hex: data?.hex ?? "#" + Math.floor(Math.random() * 16777215).toString(16),
     isCompleted: data?.isCompleted ?? false,
     subtasks: data?.subtasks ?? {},
+    isDark: data?.subtasks ?? false,
   };
 }
 export function Subtask(data) {

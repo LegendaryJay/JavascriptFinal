@@ -1,60 +1,83 @@
 <template>
   <q-layout view="hHh lpR fFf">
-
-    <q-header elevated className="bg-primary text-white">
+    <q-header elevated>
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer"/>
-
+        <q-btn
+          dense
+          flat
+          round
+          icon="menu"
+          @click="toggleLeftDrawer"
+        />
         <q-toolbar-title>
           <q-avatar>
             <icon-component/>
           </q-avatar>
-          <text v-if="$q.platform.is.desktop"> Pomme App -</text>
+          <text
+            v-if="$q.platform.is.desktop"
+          >
+            Pomme App -
+          </text>
           {{ $route.meta.title }}
         </q-toolbar-title>
-        <div v-if="!useUserStore().isLoggedIn" :key="updateVal">
-          <q-btn flat @click="loginButton = true; newUser = true;">Sign up</q-btn>
-          <q-btn @click="loginButton = true; newUser = false;">Log In</q-btn>
+        <div v-if="!isLoggedIn">
+          <q-btn
+            flat
+            @click="loginButton = true; newUser = true;"
+          >
+            Sign up
+          </q-btn>
+          <q-btn
+            @click="loginButton = true; newUser = false;"
+          >
+            Log In
+          </q-btn>
           <simple-popup-component
             v-model="loginButton"
             :title="newUser ? 'Sign Up' : 'Log In'"
           >
             <login-component
-            :is-new-user="newUser"
+              :is-new-user="newUser"
             />
-            <template v-slot:button>&#8203;</template>
+            <template #button>
+              &#8203;
+            </template>
           </simple-popup-component>
         </div>
-        <div v-else :key="updateVal + 1">
-          <q-btn flat @click=" () => { userLogging.logOut(); loginButton = false}">Log Out</q-btn>
+        <div v-else>
+          <q-btn
+            flat
+            @click=" () => { userLogging.logOut(); loginButton.value = false}"
+          >
+            Log Out
+          </q-btn>
         </div>
-
       </q-toolbar>
     </q-header>
-
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
-
       :width="200"
       :breakpoint="500"
       bordered
       class="bg-grey-3"
     >
-      <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
+      <q-scroll-area
+        class="fit"
+        :horizontal-thumb-style="{ opacity: 0 }"
+      >
         <q-list padding>
           <q-item>
             <q-item-section
               avatar
             >
-                <icon-component/>
-
+              <icon-component/>
             </q-item-section>
-
             <q-item-section>
-              <q-item-label> Pomme</q-item-label>
+              <q-item-label>
+                Pomme
+              </q-item-label>
             </q-item-section>
-
           </q-item>
           <EssentialLink
             v-for="(nav, index) in navbars"
@@ -66,22 +89,19 @@
         </q-list>
       </q-scroll-area>
     </q-drawer>
-
     <q-page-container>
       <router-view/>
     </q-page-container>
-
     <q-footer elevated className="bg-grey-8 text-white">
       <q-toolbar>
         <q-toolbar-title>
           <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
+            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg"/>
           </q-avatar>
           <div>Title</div>
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
-
   </q-layout>
 </template>
 
@@ -92,7 +112,6 @@ import SimplePopupComponent from "components/SimplePopupComponent.vue";
 import LoginComponent from "components/LoginComponent.vue";
 import iconComponent from "components/iconComponent.vue";
 import {userLogging} from "src/model/UserRepository";
-import {useUserStore} from "stores/User";
 
 export default {
   components: {EssentialLink, SimplePopupComponent, LoginComponent, iconComponent},
@@ -102,22 +121,21 @@ export default {
     }
     const leftDrawerOpen = ref(false)
 
-    let updateVal = ref(0)
-    useUserStore().$subscribe(() => {
-      updateVal.value += 1
+    let isLoggedIn = ref(false)
+    let displayName = ref("")
+    userLogging.onUpdate(
+      (user) => {
+        isLoggedIn.value = !!user;
+        displayName.value = user?.displayName
       }
     )
+
     return {
       navbars: [
         {
           title: "Timer",
           link: {name: "timer"},
           icon: "timer",
-        },
-        {
-          title: "Tasks",
-          link: {name: "tasks"},
-          icon: "task_alt",
         },
         {
           title: "Planner",
@@ -145,8 +163,7 @@ export default {
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
       userLogging,
-      updateVal,
-      useUserStore
+      isLoggedIn,
     }
   }
 }

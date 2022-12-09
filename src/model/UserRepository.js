@@ -1,11 +1,10 @@
 import { usersDb } from "src/model/firebase";
 import { UserData } from "src/model/UserData";
-import { useUserStore } from "stores/User";
 import firebase from "firebase";
 
 export const UserRepository = (function () {
   let getCurrentUserId = () => {
-    return useUserStore().user?.id ?? firebase.auth().currentUser.uid;
+    return firebase.auth().currentUser.uid;
   };
   const getCurrentUserData = () => {
     usersDb
@@ -15,15 +14,34 @@ export const UserRepository = (function () {
         if (!doc.exists) {
           console.warn("userdata does not exists.");
           console.log("creating new file");
-          UserRepository.addUserData(new UserData());
+          UserRepository.addUserData(new UserData(getCurrentUserId));
         } else {
           console.log("userdata retrieved");
           return doc.data();
         }
       });
-    return new UserData(getCurrentUserId());
+    return null;
   };
-  const addUserData = (userData = new UserData()) => {
+  const updateCurrentUserData = (path, data) => {
+    return usersDb
+      .doc(firebase.auth().currentUser.uid)
+      .update({ [path]: data })
+      .then(() => {
+        //stuff
+      })
+      .catch((error) => {
+        console.warn("Error updating", error);
+      });
+  };
+  const deleteFieldInUserData = (path) => {
+    console.log(path);
+    UserRepository.updateCurrentUserData(
+      path,
+      firebase.firestore.FieldValue.delete()
+    ).then((x) => console.log("Successful Delete!", x));
+  };
+
+  const addUserData = (userData) => {
     usersDb
       .doc(getCurrentUserId())
       .set(userData)
@@ -32,41 +50,22 @@ export const UserRepository = (function () {
         return userData;
       })
       .catch((error) => {
+        //this is on purpose
         console.error("Error adding tacos.", error);
-      });
-  };
-  const updateCurrentUserData = (data = useUserStore().userData) => {
-    return usersDb
-      .doc(firebase.auth().currentUser.uid)
-      .update(data)
-      .then(() => {
-        //stuff
-      })
-      .catch((error) => {
-        console.warn("Error updating", error);
       });
   };
 
   const onUserDataSnapshot = (onSnapshot) => {
-    const snap = usersDb
+    return usersDb
       .doc(firebase.auth()?.currentUser?.uid)
       .onSnapshot(onSnapshot);
-
-    return snap;
   };
-
-  // const addTask = (data) => {
-  //   let totalData = {
-  //     tasks: firebase.firestore.FieldValue.arrayUnion(data)
-  //   }
-  //
-  //   return updateCurrentUserData()
-  // }
   return {
     getCurrentUserData,
     addUserData,
-    updateCurrentUserData,
     onUserDataSnapshot,
+    updateCurrentUserData,
+    deleteFieldInUserData,
   };
 })();
 
@@ -88,14 +87,7 @@ export const userLogging = new (function () {
           .updateProfile({
             displayName: displayName,
           })
-          .then(
-            function () {
-              // Update successful.
-            },
-            function (error) {
-              // An error happened.
-            }
-          );
+          .then();
 
         UserRepository.addUserData();
       })
@@ -104,26 +96,19 @@ export const userLogging = new (function () {
       });
   };
   this.logOut = function () {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => console.log("Logged out"));
-    useUserStore().setUser();
+    firebase.auth().signOut().then();
   };
 
+  this.onUpdate = function (func) {
+    return firebase.auth().onAuthStateChanged((user) => {
+      func(user ?? null, UserRepository.getCurrentUserData() ?? null);
+    });
+  };
   firebase.auth().onAuthStateChanged((user) => {
     if (user) {
-      // User is signed in.
-      useUserStore().setUser(
-        user,
-        UserRepository.getCurrentUserData() ?? new UserData()
-      );
       console.log("Signed in as: ", user.displayName);
-      //console.log(useUserStore().userData)
     } else {
-      useUserStore().setUser(null, null);
-      // User is signed out.
-      console.log("Not signed in.");
+      console.log("Signed out");
     }
   });
 })();

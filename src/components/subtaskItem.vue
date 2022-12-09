@@ -1,30 +1,34 @@
 <template>
-  <q-card-section
-    style="background-color: white"
+  <q-card
+    class="q-pa-xs"
+    :style='"background:#FFF" + (hasContent?"F":"5")'
   >
     <!-- eslint-disable -->
-    <q-form class="column justify-between">
+    <q-form class="">
       <q-input
-        class="col"
+        :rules="[val => val.length > 0 || 'Field is required']"
+        class="q-pa-md"
         filled
+        dense
         v-model="subTask.name"
         label="Name"
       />
       <q-input
-        class="col"
+        :rules="[val => val > 0 || 'Must be greater than 0']"
+        class="q-pa-md"
+        dense
         v-model.number="subTask.pommesNeeded"
         type="number"
         filled
-        style="max-width: 70px"
         label="Pommes Needed"
       />
     </q-form>
     <!-- eslint-enable -->
-  </q-card-section>
+  </q-card>
 </template>
 <script setup>
 import {Subtask} from "src/model/Task";
-import {onMounted} from "vue";
+import {computed} from "vue";
 
 const props = defineProps(
   {
@@ -34,9 +38,11 @@ const props = defineProps(
     }
   }
 )
+let hasContent = computed( () => {
+  console.log(props.subTask.name.length > 0 && props.subTask.pommesNeeded > 0)
+  return props.subTask.name.length > 0 && props.subTask.pommesNeeded > 0
+  }
+)
 
 
-onMounted(() => {
-  console.log("item mounted!")
-})
 </script>

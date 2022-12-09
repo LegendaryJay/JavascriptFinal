@@ -1,15 +1,13 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-export const useTimerStore = defineStore('timer', {
+export const useTimerStore = defineStore("timer", {
   state: () => ({
-    timer:{},
+    timer: {},
     presets: {
       //name: [pomme, short, long]
-      classic: [25 * 60, 5 * 60, 15 * 60],
-      medium: [40 * 60, 8 * 60, 20 * 60],
-      extended: [60 * 60, 10 * 60, 25 * 60],
-      custom: [15 * 60, 5 * 60, 15 * 60],
+      classic: [25, 5, 15],
+      medium: [40, 8, 20],
+      extended: [60, 10, 25],
     },
-    temporaryPreset: [15 * 60, 5 * 60, 15 * 60],
   }),
-})
+});

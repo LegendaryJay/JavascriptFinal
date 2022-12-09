@@ -11,15 +11,14 @@
       :subTask=subTask
     />
 
-
-    <q-btn @click="addTask">Add!!</q-btn>
+    <q-btn @click="addTask" class="edit-btn">Add!!</q-btn>
   </q-card>
 </template>
 
 <script setup>
 import {Subtask} from "src/model/Task";
 import SubtaskItem from "components/subtaskItem.vue";
-import {ref, watch} from "vue";
+import {reactive, ref, watch} from "vue";
 
 const props = defineProps({
   subTasks: {
@@ -38,7 +37,7 @@ watch(props.subTasks,
 let updateVal = ref(0)
 
 function addTask() {
-  let newSub = new Subtask()
+  let newSub = reactive(new Subtask())
   props.subTasks[newSub.id] = newSub// eslint-disable-line
   updateVal.value += 1
 }
