@@ -13,6 +13,7 @@
         <slot name="button">
           <q-card-actions align="right" class="text-primary">
             <q-btn flat label="Close" v-close-popup></q-btn>
+            <q-btn v-if="buttonAction" color="primary" :label="buttonTitle ?? 'Button'" v-close-popup @click="buttonAction"/>
           </q-card-actions>
         </slot>
       </q-card>
@@ -32,7 +33,9 @@ const props = defineProps(
     },
     modelValue: {
       type: Boolean
-    }
+    },
+    buttonAction: Function,
+    buttonTitle: String,
   }
 )
 const emits = defineEmits(['update:buttonTrigger'])

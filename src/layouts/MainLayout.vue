@@ -96,7 +96,7 @@
       <q-toolbar>
         <q-toolbar-title>
           <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg"/>
+            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" alt="logo"/>
           </q-avatar>
           <div>Title</div>
         </q-toolbar-title>
@@ -141,11 +141,6 @@ export default {
           title: "Planner",
           link: {name: "planner"},
           icon: "calendar_today",
-        },
-        {
-          title: "Awards",
-          link: {name: "awards"},
-          icon: "stars",
         },
         {
           title: "Options",

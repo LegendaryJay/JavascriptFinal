@@ -17,9 +17,10 @@
 
 <script>
 
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 import TimerComponent from "components/timerComponent.vue";
 import {useTimerStore} from "stores/timer";
+import {userLogging, UserRepository} from "src/model/UserRepository";
 
 export default {
   components: {TimerComponent},
@@ -29,10 +30,21 @@ export default {
 
   data() {
     let maxTime = ref(0)
-    let preset = useTimerStore().presets.classic
+    let preset = reactive( useTimerStore().presets.classic );
     function setTimer(mode = 0){
       maxTime.value = preset[mode]
     }
+
+    userLogging.onUpdate( () => {
+      let newPreset;
+      UserRepository.onUserDataSnapshot((snap) => {
+        newPreset = snap.data()?.options?.preset
+        if (newPreset){
+          Object.assign(preset, newPreset)
+        }
+      })
+    })
+
     setTimer(0)
     return {
       setTimer,

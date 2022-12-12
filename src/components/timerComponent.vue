@@ -27,8 +27,9 @@
 
 <script setup>
 import {computed, ref, watch} from "vue";
+import {useTimerStore} from "stores/timer";
 
-const props = defineProps({
+let props = defineProps({
     maxTime: {
       type: Number,
       required: true,
@@ -46,7 +47,7 @@ watch(() => props.maxTime, () => {
 )
 
 
-let timer = {}
+let timer = useTimerStore().timer
 let percent = ref(100);
 
 let hoursLeft = ref(0);
@@ -94,9 +95,12 @@ const secondsToTime = function (seconds) {
 }
 
 function CountdownTimer(maxTimerLength, render, onTimeOut) {
-  let timerLength = maxTimerLength;
+  let timerLength = maxTimerLength * 60;
   let seconds;
   let interval
+
+  this.lock = false
+
 
   const tick = () => {
     seconds -= 1;
@@ -112,11 +116,13 @@ function CountdownTimer(maxTimerLength, render, onTimeOut) {
     seconds = timerLength;
   }
 
-  this.pause = () => {
+  this.pause = function () {
+    this.lock = false
     clearInterval(interval)
   }
 
-  this.start = () => {
+  this.start =function () {
+    this.lock = true
     clearInterval(interval)
     interval = setInterval(tick, 1000)
     seconds += 1
@@ -129,11 +135,11 @@ function CountdownTimer(maxTimerLength, render, onTimeOut) {
 }
 
 function createTimer() {
-  timer = new CountdownTimer(
+  Object.assign(timer, new CountdownTimer(
     props.maxTime,
     () => updateClock(),
     () => console.log("Alert!")
-  )
+  ))
   showPlay.value = true;
   updateClock()
 }

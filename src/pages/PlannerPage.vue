@@ -1,79 +1,70 @@
 <template>
   <q-page padding>
-
-    <div
+    <planner-task
       v-for="(task, index) in orderedTasks"
-      class="q-mt-lg"
+      class="q-my-auto q-py-auto"
       style="max-width: 500px"
       :key="index"
-      :id="index"
-      @click="$router.push('edit-task/' + task?.id)"
-    >
-      {{ task.dateText }}
-      <q-card
-        :style="'background-color:' + (task?.hex ?? '#FFF') + '; color:' + (task?.isDark ? '#FFF' : '#000') + ';' "
-      >
-        <q-card-section class="flex justify-between">
-          <h3 class="col-9">
-            {{ task.name }}
-          </h3>
-          <h4 class="col-3">
-            {{ task?.pommesNeeded }}
-            <icon-component/>
-          </h4>
-        </q-card-section>
-        <q-card-section class="flex-center justify-center">
-          <text class="col">
-            Things
-          </text>
-        </q-card-section>
-
-
-      </q-card>
+      :task="task"
+    />
+    <div class="">
+      <q-btn
+        fab-mini
+        style="max-width: 500px"
+        class="bg-primary text-white"
+        icon="add"
+      />
     </div>
 
-    <q-btn
-      fab class="bg-primary text-white"
-      icon="add"
-      @click="$router.push('new-task')"
-    />
 
   </q-page>
 </template>
 
 <script setup>
-import {UserRepository} from "src/model/UserRepository";
-import {computed, onMounted, reactive} from "vue";
-import IconComponent from "components/iconComponent.vue";
+import {userLogging, UserRepository} from "src/model/UserRepository";
+import {computed, reactive} from "vue";
+import PlannerTask from "components/PlannerTask.vue";
+
+//@click="$router.push('edit-task/' + task?.id)"
 
 let tasks = reactive({})
-onMounted(() =>
-  UserRepository.onUserDataSnapshot(
+
+let update = () => {};
+let updateContents = function (){
+  update()
+  update = UserRepository.onUserDataSnapshot(
     (snapshot) => {
       Object.assign(tasks, snapshot.data()?.tasks ?? {})
     }
   )
-)
+}
+userLogging.onUpdate(updateContents
 
+)
 function readableTime(date) {
-  const relativeDays = Math.ceil((date - Date.now()) / (1000 * 3600 * 24));
+  const relativeDays =
+    Math.ceil(
+      ((new Date(date)) - Date.now()) / (1000 * 3600 * 24));
+  console.log(date)
+
   let positiveRelativeDays = Math.abs(relativeDays)
   let depth;
-  let result
-  const isPast = Math.sign(relativeDays) === -1
+  let result = "";
+  const isPast = Math.sign(relativeDays) === -1;
 
   if (positiveRelativeDays > 6) {
     result = (isPast ? "" : "in ") + positiveRelativeDays + " days" + (isPast ? " ago" : "")
-    depth = 2
-  } else if (positiveRelativeDays > 1) {
     depth = 1
+  } else if (positiveRelativeDays > 1) {
+    depth = 0
     result = (isPast ? "Last " : "") + (new Date(date)).toLocaleDateString('en-US', {
       weekday: 'long',
     })
-      console.log(isPast, positiveRelativeDays, relativeDays)
+    console.log(isPast, positiveRelativeDays, relativeDays)
   } else {
     depth = 0
     switch (relativeDays) {
+      case -0:
       case 0:
         result = "Today"
         break
@@ -90,6 +81,7 @@ function readableTime(date) {
   if (isPast) {
     depth = -1
   }
+  result = "Due " + result
 
   return {
     text: result,
@@ -109,10 +101,17 @@ let orderedTasks = computed(() => {
 
     let subtasks = (Object.values(x?.subtasks) ?? [])
     x.pommesNeeded = subtasks.reduce((add, x) => add + (x?.pommesNeeded ?? 0), 0)
-    console.log("this Task", x.pommesNeeded)
   });
+  moddedTasks.sort((a, b) => a.relativeDays - b.relativeDays).sort((a, b) => a.dateDepth - b.dateDepth);
 
-  return moddedTasks.sort((a, b) => a.relativeDays - b.relativeDays).sort((a, b) => a.dateDepth - b.dateDepth);
+  let lastMode = moddedTasks?.[0]?.dateDepth
+  for (const task of moddedTasks) {
+    if (lastMode !== task.dateDepth && task.dateDepth === 1) {
+      task.separate = true
+      lastMode = task.dateDepth
+    }
+  }
+  return moddedTasks
 })
 
 </script>
