@@ -117,7 +117,7 @@ export default {
   components: {EssentialLink, SimplePopupComponent, LoginComponent, iconComponent},
   setup() {
     const getImageUrl = () => {
-      return new URL(`../../assets/pomme.png`, import.meta.url).href
+      return new URL(`~assets/pomme.png`, import.meta.url).href
     }
     const leftDrawerOpen = ref(false)
 

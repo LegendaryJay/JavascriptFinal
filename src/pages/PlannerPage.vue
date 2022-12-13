@@ -1,19 +1,19 @@
 <template>
   <q-page padding>
-    <planner-task
-      v-for="(task, index) in orderedTasks"
-      class="q-my-auto q-py-auto"
-      style="max-width: 500px"
-      :key="index"
-      :task="task"
-    />
     <div class="">
-      <q-btn
-        fab-mini
-        style="max-width: 500px"
-        class="bg-primary text-white"
-        icon="add"
+      <planner-task
+        v-for="(task, index) in orderedTasks"
+        :key="index"
+        :task="task"
       />
+
+      <q-card
+        v-ripple
+        class="q-ma-md flex flex-center text-center bg-primary cursor-pointer q-hoverable"
+        style="width: 425px;height: 40px;border-radius: 30px;"
+      >
+        <span class="col text-weight-bold text-h6 text-white" @click="$router.push('new-task')"> Add Task </span>
+      </q-card>
     </div>
 
 
@@ -29,8 +29,9 @@ import PlannerTask from "components/PlannerTask.vue";
 
 let tasks = reactive({})
 
-let update = () => {};
-let updateContents = function (){
+let update = () => {
+};
+let updateContents = function () {
   update()
   update = UserRepository.onUserDataSnapshot(
     (snapshot) => {
@@ -38,14 +39,13 @@ let updateContents = function (){
     }
   )
 }
-userLogging.onUpdate(updateContents
+updateContents()
+userLogging.onUpdate(updateContents)
 
-)
 function readableTime(date) {
   const relativeDays =
     Math.ceil(
       ((new Date(date)) - Date.now()) / (1000 * 3600 * 24));
-  console.log(date)
 
   let positiveRelativeDays = Math.abs(relativeDays)
   let depth;
@@ -60,7 +60,6 @@ function readableTime(date) {
     result = (isPast ? "Last " : "") + (new Date(date)).toLocaleDateString('en-US', {
       weekday: 'long',
     })
-    console.log(isPast, positiveRelativeDays, relativeDays)
   } else {
     depth = 0
     switch (relativeDays) {

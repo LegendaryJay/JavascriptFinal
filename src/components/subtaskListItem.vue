@@ -2,7 +2,7 @@
   <q-item
     v-ripple
     clickable
-    @click="() => clickAction(subtask)"
+    @click="() => $router.push('timer/' + task?.id)"
   >
     <q-item-section>
       {{ subtask.name }}
@@ -16,7 +16,6 @@
         />
       </div>
     </q-item-section >
-
   </q-item>
 </template>
 

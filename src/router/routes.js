@@ -19,15 +19,6 @@ const routes = [
         },
       },
       {
-        path: "tasks",
-        component: () => import("pages/TasksPage.vue"),
-        name: "tasks",
-        meta: {
-          title: "Tasks",
-          requireLogin: true,
-        },
-      },
-      {
         path: "edit-task/:id",
         component: () => import("pages/ModifyTask.vue"),
         name: "taskEdit",

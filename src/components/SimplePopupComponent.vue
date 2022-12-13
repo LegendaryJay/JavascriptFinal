@@ -30,15 +30,23 @@ const props = defineProps(
   {
     title: {
       type: String,
+      default: "",
     },
     modelValue: {
-      type: Boolean
+      type: Boolean,
+      default: false,
     },
-    buttonAction: Function,
-    buttonTitle: String,
+    buttonAction: {
+      type: Function,
+      default: () => {}
+    },
+    buttonTitle: {
+      type: String,
+      default: ""
+    },
   }
 )
-const emits = defineEmits(['update:buttonTrigger'])
+const emits = defineEmits(['update:modelValue'])
 
 let fakeButton = computed(
   {

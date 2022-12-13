@@ -10,7 +10,7 @@
       </q-btn-group>
       <TimerComponent
         :maxTime="maxTime"
-        />
+      />
     </div>
   </q-page>
 </template>
@@ -26,22 +26,29 @@ export default {
   components: {TimerComponent},
 
   // name: 'PageName',
-
-
-  data() {
+  props: {
+    taskId: {
+      type: String,
+      default: "",
+    }
+  },
+  data(props) {
+    let task = reactive({});
     let maxTime = ref(0)
-    let preset = reactive( useTimerStore().presets.classic );
-    function setTimer(mode = 0){
+    let preset = reactive(useTimerStore().presets.classic);
+
+    function setTimer(mode = 0) {
       maxTime.value = preset[mode]
     }
 
-    userLogging.onUpdate( () => {
+    userLogging.onUpdate(() => {
       let newPreset;
       UserRepository.onUserDataSnapshot((snap) => {
         newPreset = snap.data()?.options?.preset
-        if (newPreset){
+        if (newPreset) {
           Object.assign(preset, newPreset)
         }
+        Object.assign(task, snap.data()?.tasks?.[props?.taskId] )
       })
     })
 
@@ -50,6 +57,7 @@ export default {
       setTimer,
       maxTime,
       preset,
+      task,
     }
   }
 

@@ -9,7 +9,7 @@
     </div>
 
     <div class="flex row">
-      <div class="q-pa-md col-11" style="max-width: 600px">
+      <div class="q-pa-md col-10" style="max-width: 600px">
         <q-expansion-item
           :dark="task?.isDark"
           v-model="isExtended"
@@ -44,10 +44,13 @@
       </div>
       <transition name="fade">
         <div v-show="isExtended" class="column justify-center col-1" >
-          <q-btn class="q-my-sm" fab-mini text-color="white" color="primary" icon="edit" @click="$router.push('edit-task/' + task?.id)"/>
           <q-btn class="q-my-sm" fab-mini color="negative" icon="delete" @click="() => (deleteDialog = true)"/>
+          <q-btn class="q-my-sm" fab-mini text-color="white" color="primary" icon="edit" @click="$router.push('edit-task/' + task?.id)"/>
         </div>
       </transition>
+      <div class="column justify-center col-1" >
+        <q-btn class="q-my-sm" fab-mini text-color="white" color="green" icon="play_arrow" @click="$router.push('timer/' + task?.id)"/>
+      </div>
 
       <simple-popup-component
         v-model="deleteDialog"
